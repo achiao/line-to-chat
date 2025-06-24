@@ -16,6 +16,7 @@ app.post('/', async function (req) {
   console.log('Line: ', data);
   let channelAccessToken = '';
   let chatToken = '';
+  console.log('process.env.LINE_BOT_10F', process.env.LINE_BOT_10F);
   if (data.destination === process.env.LINE_BOT_7F) {
     channelAccessToken = process.env.CHANNEL_ACCESS_TOKEN_7F!;
     chatToken = process.env.CHAT_TOKEN_7F!;
@@ -36,6 +37,7 @@ app.post('/', async function (req) {
   const client = new Client({
     channelAccessToken
   });
+  console.log('create client');
   let userId = '';
   let text = '';
   let fileURL = '';
@@ -54,8 +56,11 @@ app.post('/', async function (req) {
       fileURL = await getFileURL(messageId, client);
     }
   }
+  console.log('get text or file', text, fileURL);
   await sendMessageToChat(text, fileURL, chatToken);
+  console.log('send message to chat');
   sendMessageToLine(client, userId);
+  console.log('send message to line');
 });
 
 app.get('/', function (req, res) {
