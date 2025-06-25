@@ -18,18 +18,7 @@
     "imgur": "^2.4.3",
     "lodash.debounce": "^4.0.8",
     "node-jose": "^2.2.0",
-    "tslib": "^2.6.0"
-  },
-  "scripts": {
-    "start": "node --es-module-specifier-resolution=node ./build/index.js",
-    "dev": "node --es-module-specifier-resolution=node -r dotenv/config ./build/index.js dotenv_config_path=./.env.test",
-    "prod": "node --es-module-specifier-resolution=node -r dotenv/config ./build/index.js dotenv_config_path=./.env",
-    "build": "npm run lint; npm run prettier-format; tsc",
-    "lint": "eslint . --ext .ts",
-    "prettier-format": "prettier --config .prettierrc 'src/**/*.ts' --write",
-    "delete-images": "node --es-module-specifier-resolution=node -r dotenv/config ./build/deleteImgurImages.js dotenv_config_path=./.env.test"
-  },
-  "devDependencies": {
+    "tslib": "^2.6.0",
     "@types/express": "^4.17.17",
     "@types/node": "^18.19.112",
     "@types/node-jose": "^1.1.10",
@@ -39,5 +28,14 @@
     "eslint": "^8.44.0",
     "prettier": "^3.0.0",
     "typescript": "^5.8.3"
+  },
+  "scripts": {
+    "start": "node --es-module-specifier-resolution=node ./build/index.js",
+    "dev": "node --es-module-specifier-resolution=node -r dotenv/config ./build/index.js dotenv_config_path=./.env.test",
+    "prod": "node --es-module-specifier-resolution=node -r dotenv/config ./build/index.js dotenv_config_path=./.env",
+    "build": "npm run lint; npm run prettier-format; tsc",
+    "lint": "eslint . --ext .ts",
+    "prettier-format": "prettier --config .prettierrc 'src/**/*.ts' --write",
+    "delete-images": "node --es-module-specifier-resolution=node -r dotenv/config ./build/deleteImgurImages.js dotenv_config_path=./.env.test"
   }
 }
