@@ -15,7 +15,7 @@
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "https": "^1.0.0",
-    "imgur": "^2.4.3",
+    "imgur": "^2.3.0",
     "lodash.debounce": "^4.0.8",
     "node-jose": "^2.2.0",
     "tslib": "^2.6.0"
@@ -26,8 +26,7 @@
     "prod": "node --es-module-specifier-resolution=node -r dotenv/config ./build/index.js dotenv_config_path=./.env",
     "build": "npm run lint; npm run prettier-format; npx tsc",
     "lint": "eslint . --ext .ts",
-    "prettier-format": "prettier --config .prettierrc 'src/**/*.ts' --write",
-    "delete-images": "tsx ./src/getAccessToken.ts"
+    "prettier-format": "prettier --config .prettierrc 'src/**/*.ts' --write"
   },
   "devDependencies": {
     "@types/express": "^4.17.17",
@@ -37,7 +36,6 @@
     "@typescript-eslint/parser": "^6.0.0",
     "eslint": "^8.44.0",
     "prettier": "^3.0.0",
-    "tsx": "^4.20.3",
     "typescript": "^5.1.6"
   }
 }
