@@ -5,10 +5,10 @@ async function getImages() {
     'Bearer e7e16fd6a0ff6dfbb3b4ef0459a8d4678688a8f2'
   );
 
-  const requestOptions = {
+  const requestOptions: RequestInit = {
     method: 'GET',
     headers: myHeaders,
-    redirect: 'follow'
+    redirect: 'follow' as RequestRedirect
   };
   try {
     const response = await fetch(
@@ -26,7 +26,7 @@ async function getImages() {
   }
 }
 
-function deleteImages(imagesId) {
+function deleteImages(imagesId: string[]) {
   const myHeaders = new Headers();
   myHeaders.append(
     'Authorization',
@@ -35,11 +35,11 @@ function deleteImages(imagesId) {
 
   const formdata = new FormData();
 
-  const requestOptions = {
+  const requestOptions: RequestInit = {
     method: 'DELETE',
     headers: myHeaders,
     body: formdata,
-    redirect: 'follow'
+    redirect: 'follow' as RequestRedirect
   };
 
   imagesId.forEach((imageHash) => {
