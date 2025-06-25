@@ -1,30 +1,34 @@
-import axios from 'axios';
-import FormData from 'form-data';
-
-async function getAccessToken() {
-  const data = new FormData();
-  data.append('refresh_token', '3b6930cc4dc2b6691e7bca0490248dbbd18acd4e');
-  data.append('client_id', '613a9d8ce8b43aa');
-  data.append('client_secret', '4982e5f9d620eb6ba0e89bdb30e1a0001140f7d3');
-  data.append('grant_type', 'refresh_token');
-
-  const config = {
-    method: 'post',
-    maxBodyLength: Infinity,
-    url: 'https://api.imgur.com/oauth2/token',
-    headers: {
-      ...data.getHeaders()
-    },
-    data: data
-  };
-
-  try {
-    const response = await axios.request(config);
-    console.log(JSON.stringify(response.data));
-  } catch (error) {
-    console.error(error.response ? error.response.data : error);
-  }
+export interface ImgurImage {
+  id: string;
+  title: string | null;
+  description: string | null;
+  datetime: number;
+  type: string;
+  animated: boolean;
+  width: number;
+  height: number;
+  size: number;
+  views: number;
+  bandwidth: number;
+  vote: null | string;
+  favorite: boolean;
+  nsfw: null | boolean;
+  section: null | string;
+  account_url: string;
+  account_id: number;
+  is_ad: boolean;
+  in_most_viral: boolean;
+  has_sound: boolean;
+  tags: string[];
+  ad_type: number;
+  ad_url: string;
+  edited: string;
+  in_gallery: boolean;
+  deletehash: string;
+  name: string;
+  link: string;
 }
+
 async function getImages() {
   const myHeaders = new Headers();
   myHeaders.append(
@@ -46,23 +50,22 @@ async function getImages() {
       throw new Error(`Response status: ${response.status}`);
     }
     const json = await response.json();
-    return json.data.map((image) => image.id);
-    console.log('response: ', json);
+    return json.data.map((image: ImgurImage) => image.id);
   } catch (error) {
     console.error('Error fetching images:', error);
   }
 }
 
 function deleteImages(imagesId: string[]) {
-  var myHeaders = new Headers();
+  const myHeaders = new Headers();
   myHeaders.append(
     'Authorization',
     'Bearer e7e16fd6a0ff6dfbb3b4ef0459a8d4678688a8f2'
   );
 
-  var formdata = new FormData();
+  const formdata = new FormData();
 
-  var requestOptions: RequestInit = {
+  const requestOptions: RequestInit = {
     method: 'DELETE',
     headers: myHeaders,
     body: formdata,
@@ -78,10 +81,9 @@ function deleteImages(imagesId: string[]) {
 }
 (async () => {
   try {
-    await getAccessToken();
-    /*const imagesId = await getImages();
+    const imagesId = await getImages();
     console.log('imagesId: ', imagesId);
-    deleteImages(imagesId);*/
+    deleteImages(imagesId);
   } catch (err) {
     console.error('Error:', err);
   }
