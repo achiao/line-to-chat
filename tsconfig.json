@@ -11,5 +11,5 @@
     "moduleResolution": "node"
   },
   "include": ["src/**/*"],
-  "exclude": ["node_modules/**/*", "test.js"]
+  "exclude": ["test.js"]
 }
