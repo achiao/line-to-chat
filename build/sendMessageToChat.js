@@ -3,6 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.default = sendMessageToChat;
 const https_1 = __importDefault(require("https"));
 async function sendMessageToChat(text = '', fileURL = '', chatToken = '') {
     return new Promise((resolve) => {
@@ -17,4 +18,3 @@ async function sendMessageToChat(text = '', fileURL = '', chatToken = '') {
         });
     });
 }
-exports.default = sendMessageToChat;

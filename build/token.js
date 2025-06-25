@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getAccessToken = void 0;
+exports.getAccessToken = getAccessToken;
 const node_jose_1 = __importDefault(require("node-jose"));
 const privateKey = `
 {
@@ -47,4 +47,3 @@ async function getAccessToken() {
         console.error(error);
     }
 }
-exports.getAccessToken = getAccessToken;
