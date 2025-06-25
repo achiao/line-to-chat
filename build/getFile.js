@@ -1,6 +1,5 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = getFileURL;
 const imgur_1 = require("imgur");
 async function getFileURL(messageId, client) {
     return await client.getMessageContent(messageId).then((stream) => {
@@ -31,3 +30,4 @@ async function getFileURL(messageId, client) {
         });
     });
 }
+exports.default = getFileURL;
