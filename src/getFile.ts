@@ -30,6 +30,7 @@ export default async function getFileURL(
         );
         const imageBuffer = Buffer.concat(chunks as Uint8Array[]);
         const base64Image = imageBuffer.toString('base64');
+        console.log('base64Image: ', base64Image);
         const now = new Date();
         const timestamp =
           now.getFullYear() +
@@ -42,14 +43,11 @@ export default async function getFileURL(
         // Upload to Cloudinary
         let result;
         try {
-          result = await cloudinary.uploader.upload(
-            `data:image/jpeg;base64,${base64Image}`,
-            {
-              folder: 'images',
-              public_id: timestamp,
-              resource_type: 'image'
-            }
-          );
+          result = await cloudinary.uploader.upload(base64Image, {
+            folder: 'images',
+            public_id: timestamp,
+            resource_type: 'image'
+          });
         } catch (error) {
           console.error('Cloudinary Upload Error:', error);
           return resolve(''); // or handle the error as needed
