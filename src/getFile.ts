@@ -15,7 +15,7 @@ export default async function getFileURL(
   return await client.getMessageContent(messageId).then((stream) => {
     return new Promise(function (resolve) {
       const chunks: Buffer[] = [];
-      stream.on('data', async (chunk: Buffer) => {
+      stream.on('data', (chunk: Buffer) => {
         chunks.push(chunk);
       });
       stream.on('error', (err: Error) => {
@@ -30,24 +30,17 @@ export default async function getFileURL(
         );
         const imageBuffer = Buffer.concat(chunks as Uint8Array[]);
         const base64Image = imageBuffer.toString('base64');
-        console.log('base64Image: ', base64Image);
-        const now = new Date();
-        const timestamp =
-          now.getFullYear() +
-          String(now.getMonth() + 1).padStart(2, '0') +
-          String(now.getDate()).padStart(2, '0') +
-          String(now.getHours()).padStart(2, '0') +
-          String(now.getMinutes()).padStart(2, '0') +
-          String(now.getSeconds()).padStart(2, '0');
 
+        console.log('base64Image: ', base64Image);
         // Upload to Cloudinary
         let result;
         try {
-          result = await cloudinary.uploader.upload(base64Image, {
-            folder: 'images',
-            public_id: timestamp,
-            resource_type: 'image'
-          });
+          result = await cloudinary.uploader.upload(
+            `data:image/jpeg;base64,${base64Image}`,
+            {
+              resource_type: 'image'
+            }
+          );
         } catch (error) {
           console.error('Cloudinary Upload Error:', error);
           return resolve(''); // or handle the error as needed

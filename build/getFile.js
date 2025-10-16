@@ -11,7 +11,7 @@ async function getFileURL(messageId, client) {
     return await client.getMessageContent(messageId).then((stream) => {
         return new Promise(function (resolve) {
             const chunks = [];
-            stream.on('data', async (chunk) => {
+            stream.on('data', (chunk) => {
                 chunks.push(chunk);
             });
             stream.on('error', (err) => {
@@ -23,19 +23,10 @@ async function getFileURL(messageId, client) {
                 const imageBuffer = Buffer.concat(chunks);
                 const base64Image = imageBuffer.toString('base64');
                 console.log('base64Image: ', base64Image);
-                const now = new Date();
-                const timestamp = now.getFullYear() +
-                    String(now.getMonth() + 1).padStart(2, '0') +
-                    String(now.getDate()).padStart(2, '0') +
-                    String(now.getHours()).padStart(2, '0') +
-                    String(now.getMinutes()).padStart(2, '0') +
-                    String(now.getSeconds()).padStart(2, '0');
                 // Upload to Cloudinary
                 let result;
                 try {
-                    result = await cloudinary_1.v2.uploader.upload(base64Image, {
-                        folder: 'images',
-                        public_id: timestamp,
+                    result = await cloudinary_1.v2.uploader.upload(`data:image/jpeg;base64,${base64Image}`, {
                         resource_type: 'image'
                     });
                 }
