@@ -1,18 +1,12 @@
-import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
+import { v2 as cloudinary } from 'cloudinary';
 import { Client } from '@line/bot-sdk';
 
-// Synology C2 Object Storage configuration
-const s3Client = new S3Client({
-  region: 'us-003',
-  endpoint: 'https://us-003.s3.synologyc2.net',
-  credentials: {
-    accessKeyId: process.env.accessKeyId as string,
-    secretAccessKey: process.env.secretAccessKey as string
-  },
-  forcePathStyle: false
+// Cloudinary configuration
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET
 });
-
-const BUCKET_NAME = '10aaunt';
 
 export default async function getFileURL(
   messageId: string,
@@ -30,20 +24,28 @@ export default async function getFileURL(
       });
       stream.on('end', async () => {
         const imageBuffer = Buffer.concat(chunks as Uint8Array[]);
+        const base64Image = imageBuffer.toString('base64');
+        const now = new Date();
+        const timestamp =
+          now.getFullYear() +
+          String(now.getMonth() + 1).padStart(2, '0') +
+          String(now.getDate()).padStart(2, '0') +
+          String(now.getHours()).padStart(2, '0') +
+          String(now.getMinutes()).padStart(2, '0') +
+          String(now.getSeconds()).padStart(2, '0');
 
-        // Upload to Synology C2 Object Storage
-        const command = new PutObjectCommand({
-          Bucket: BUCKET_NAME,
-          Key: `images/${messageId}.jpg`,
-          Body: imageBuffer,
-          ContentType: 'image/jpeg',
-          ACL: 'public-read' as const
-        });
+        // Upload to Cloudinary
+        const result = await cloudinary.uploader.upload(
+          `data:image/jpeg;base64,${base64Image}`,
+          {
+            folder: 'images',
+            public_id: timestamp,
+            resource_type: 'image'
+          }
+        );
 
-        await s3Client.send(command);
-
-        const fileURL = `https://us-003.s3.synologyc2.net/${BUCKET_NAME}/images/${messageId}.jpg`;
-        console.log('S3 Upload:', fileURL);
+        const fileURL = result.secure_url;
+        console.log('Cloudinary Upload:', fileURL);
         resolve(fileURL);
       });
     });
