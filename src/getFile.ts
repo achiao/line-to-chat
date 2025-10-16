@@ -1,5 +1,18 @@
-import { ImgurClient } from 'imgur';
+import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 import { Client } from '@line/bot-sdk';
+
+// Synology C2 Object Storage configuration
+const s3Client = new S3Client({
+  region: 'us-003',
+  endpoint: 'https://us-003.s3.synologyc2.net',
+  credentials: {
+    accessKeyId: process.env.accessKeyId as string,
+    secretAccessKey: process.env.secretAccessKey as string
+  },
+  forcePathStyle: false
+});
+
+const BUCKET_NAME = '10aaunt';
 
 export default async function getFileURL(
   messageId: string,
@@ -16,21 +29,21 @@ export default async function getFileURL(
         // error handling
       });
       stream.on('end', async () => {
-        const base64Image = Buffer.from(Buffer.concat(chunks)).toString(
-          'base64'
-        );
-        const client = new ImgurClient({
-          clientId: process.env.CLIENT_ID,
-          clientSecret: process.env.CLIENT_SECRET,
-          refreshToken: process.env.REFRESH_TOKEN
+        const imageBuffer = Buffer.concat(chunks as Uint8Array[]);
+
+        // Upload to Synology C2 Object Storage
+        const command = new PutObjectCommand({
+          Bucket: BUCKET_NAME,
+          Key: `images/${messageId}.jpg`,
+          Body: imageBuffer,
+          ContentType: 'image/jpeg',
+          ACL: 'public-read' as const
         });
 
-        const response = await client.upload({
-          image: base64Image,
-          type: 'base64'
-        });
-        console.log('Imgur: ', response.data);
-        const fileURL = response.data.link;
+        await s3Client.send(command);
+
+        const fileURL = `https://us-003.s3.synologyc2.net/${BUCKET_NAME}/images/${messageId}.jpg`;
+        console.log('S3 Upload:', fileURL);
         resolve(fileURL);
       });
     });

@@ -1,6 +1,17 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const imgur_1 = require("imgur");
+const client_s3_1 = require("@aws-sdk/client-s3");
+// Synology C2 Object Storage configuration
+const s3Client = new client_s3_1.S3Client({
+    region: 'us-003',
+    endpoint: 'https://us-003.s3.synologyc2.net',
+    credentials: {
+        accessKeyId: process.env.accessKeyId,
+        secretAccessKey: process.env.secretAccessKey
+    },
+    forcePathStyle: false
+});
+const BUCKET_NAME = '10aaunt';
 async function getFileURL(messageId, client) {
     return await client.getMessageContent(messageId).then((stream) => {
         return new Promise(function (resolve) {
@@ -13,18 +24,18 @@ async function getFileURL(messageId, client) {
                 // error handling
             });
             stream.on('end', async () => {
-                const base64Image = Buffer.from(Buffer.concat(chunks)).toString('base64');
-                const client = new imgur_1.ImgurClient({
-                    clientId: process.env.CLIENT_ID,
-                    clientSecret: process.env.CLIENT_SECRET,
-                    refreshToken: process.env.REFRESH_TOKEN
+                const imageBuffer = Buffer.concat(chunks);
+                // Upload to Synology C2 Object Storage
+                const command = new client_s3_1.PutObjectCommand({
+                    Bucket: BUCKET_NAME,
+                    Key: `images/${messageId}.jpg`,
+                    Body: imageBuffer,
+                    ContentType: 'image/jpeg',
+                    ACL: 'public-read'
                 });
-                const response = await client.upload({
-                    image: base64Image,
-                    type: 'base64'
-                });
-                console.log('Imgur: ', response.data);
-                const fileURL = response.data.link;
+                await s3Client.send(command);
+                const fileURL = `https://us-003.s3.synologyc2.net/${BUCKET_NAME}/images/${messageId}.jpg`;
+                console.log('S3 Upload:', fileURL);
                 resolve(fileURL);
             });
         });
