@@ -22,6 +22,7 @@ async function getFileURL(messageId, client) {
                 console.log(process.env.CLOUDINARY_CLOUD_NAME, process.env.CLOUDINARY_API_KEY, process.env.CLOUDINARY_API_SECRET);
                 const imageBuffer = Buffer.concat(chunks);
                 const base64Image = imageBuffer.toString('base64');
+                console.log('base64Image: ', base64Image);
                 const now = new Date();
                 const timestamp = now.getFullYear() +
                     String(now.getMonth() + 1).padStart(2, '0') +
@@ -32,7 +33,7 @@ async function getFileURL(messageId, client) {
                 // Upload to Cloudinary
                 let result;
                 try {
-                    result = await cloudinary_1.v2.uploader.upload(`data:image/jpeg;base64,${base64Image}`, {
+                    result = await cloudinary_1.v2.uploader.upload(base64Image, {
                         folder: 'images',
                         public_id: timestamp,
                         resource_type: 'image'
