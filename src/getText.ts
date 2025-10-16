@@ -16,5 +16,5 @@ function couldShowAtChannel(): boolean {
 }
 
 export default function getText(text: string): string {
-  return couldShowAtChannel() ? `@channel\\n ${text}` : text;
+  return couldShowAtChannel() ? `@all\\n ${text}` : text;
 }

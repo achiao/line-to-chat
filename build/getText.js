@@ -14,6 +14,6 @@ function couldShowAtChannel() {
     }
 }
 function getText(text) {
-    return couldShowAtChannel() ? `@channel\\n ${text}` : text;
+    return couldShowAtChannel() ? `@all\\n ${text}` : text;
 }
 exports.default = getText;
