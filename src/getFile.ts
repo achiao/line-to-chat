@@ -23,6 +23,11 @@ export default async function getFileURL(
         // error handling
       });
       stream.on('end', async () => {
+        console.log(
+          process.env.CLOUDINARY_CLOUD_NAME,
+          process.env.CLOUDINARY_API_KEY,
+          process.env.CLOUDINARY_API_SECRET
+        );
         const imageBuffer = Buffer.concat(chunks as Uint8Array[]);
         const base64Image = imageBuffer.toString('base64');
         const now = new Date();
@@ -35,14 +40,20 @@ export default async function getFileURL(
           String(now.getSeconds()).padStart(2, '0');
 
         // Upload to Cloudinary
-        const result = await cloudinary.uploader.upload(
-          `data:image/jpeg;base64,${base64Image}`,
-          {
-            folder: 'images',
-            public_id: timestamp,
-            resource_type: 'image'
-          }
-        );
+        let result;
+        try {
+          result = await cloudinary.uploader.upload(
+            `data:image/jpeg;base64,${base64Image}`,
+            {
+              folder: 'images',
+              public_id: timestamp,
+              resource_type: 'image'
+            }
+          );
+        } catch (error) {
+          console.error('Cloudinary Upload Error:', error);
+          return resolve(''); // or handle the error as needed
+        }
 
         const fileURL = result.secure_url;
         console.log('Cloudinary Upload:', fileURL);
