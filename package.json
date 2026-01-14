@@ -36,7 +36,7 @@
     "@types/whatwg-url": "^13.0.0",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
-    "eslint": "^8.44.0",
+    "eslint": "^8.48.0",
     "prettier": "^3.0.0",
     "tsx": "^4.20.3",
     "typescript": "^5.1.6"
